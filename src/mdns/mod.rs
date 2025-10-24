@@ -5,6 +5,12 @@ use dns_lookup::getnameinfo;
 use dns_parser::RData;
 use serde::{Deserialize, Serialize};
 
+#[cfg(not(target_os = "windows"))]
+use interfaces;
+
+#[cfg(target_os = "windows")]
+use if_addrs;
+
 pub mod discovery;
 
 mod fingerprint;
