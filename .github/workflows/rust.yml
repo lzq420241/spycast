@@ -19,7 +19,7 @@ jobs:
     
     - name: Build project
       run: |
-        cargo build --release --no-default-features
+        cargo build --release
     
     - name: Upload binary
       uses: actions/upload-artifact@v4
