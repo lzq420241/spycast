@@ -20,10 +20,11 @@ serde_json = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
 # used for the ui feature
 tauri = { version = "1.1.1", optional = true , features = [] }
-interfaces = { version = "0.0.8", optional = true }
-
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(not(target_os = "windows"))'.dependencies]
 interfaces = "0.0.8"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+if-addrs = "0.6" # or use "ipconfig" or another windows-capable crate
 
 [features]
 default = ["ui"]
