@@ -20,6 +20,9 @@ serde_json = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
 # used for the ui feature
 tauri = { version = "1.1.1", optional = true , features = [] }
+interfaces = { version = "0.0.8", optional = true }
+
+[target.'cfg(unix)'.dependencies]
 interfaces = "0.0.8"
 
 [features]
