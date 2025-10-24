@@ -85,10 +85,20 @@ impl Endpoint {
         };
 
         let mut local = false;
-        for iface in interfaces::Interface::get_all().expect("could not get network interfaces") {
-            for addr in iface.addresses.iter() {
-                if let Some(ip) = addr.addr {
-                    if ip.ip() == address.ip() {
+        // 替换为 if_addrs::get_if_addrs()
+        for iface in if_addrs::get_if_addrs().expect("could not get network interfaces") {
+            // iface.addr 是 IfAddr 类型，直接使用
+            match iface.addr {
+                if_addrs::IfAddr::V4(v4) => {
+                    // 直接访问 v4.ip 字段
+                    if v4.ip == address.ip() {
+                        local = true;
+                        break;
+                    }
+                }
+                if_addrs::IfAddr::V6(v6) => {
+                    // 直接访问 v6.ip 字段
+                    if v6.ip == address.ip() {
                         local = true;
                         break;
                     }
