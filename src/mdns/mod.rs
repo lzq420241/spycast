@@ -5,6 +5,12 @@ use dns_lookup::getnameinfo;
 use dns_parser::RData;
 use serde::{Deserialize, Serialize};
 
+#[cfg(not(target_os = "windows"))]
+use interfaces;
+
+#[cfg(target_os = "windows")]
+use if_addrs;
+
 pub mod discovery;
 
 mod fingerprint;
@@ -85,13 +91,27 @@ impl Endpoint {
         };
 
         let mut local = false;
-        for iface in interfaces::Interface::get_all().expect("could not get network interfaces") {
-            for addr in iface.addresses.iter() {
-                if let Some(ip) = addr.addr {
-                    if ip.ip() == address.ip() {
-                        local = true;
-                        break;
+        
+        #[cfg(not(target_os = "windows"))]
+        {
+            for iface in interfaces::Interface::get_all().expect("could not get network interfaces") {
+                for addr in iface.addresses.iter() {
+                    if let Some(ip) = addr.addr {
+                        if ip.ip() == address.ip() {
+                            local = true;
+                            break;
+                        }
                     }
+                }
+            }
+        }
+        
+        #[cfg(target_os = "windows")]
+        {
+            for iface in if_addrs::get_if_addrs().expect("could not get network interfaces") {
+                if iface.ip() == address.ip() {
+                    local = true;
+                    break;
                 }
             }
         }
